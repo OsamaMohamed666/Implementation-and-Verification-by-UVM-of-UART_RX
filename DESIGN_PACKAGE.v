@@ -1,0 +1,7 @@
+`include "data_sampling.v"
+`include "deserializer.v"
+`include "edge_bit_counter.v"
+`include "par_chk.v"
+`include "stp_chk.v"
+`include "strt_chk.v"
+`include "uart_rx_fsm.v"
