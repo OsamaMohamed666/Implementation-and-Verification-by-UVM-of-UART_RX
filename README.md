@@ -21,7 +21,7 @@
   4) Some assertions are written specifically to verify the behavior of the internal bit_count signal, ensuring it increments correctly across the reception of the start bit, data bits, optional parity bit, and 
    stop bit, as per the design specification.
   5) Testing odd, even parity, and non-parity behaviours.
-  6) The testbench is executed using Synopsys VCS (DVE); however, due to confidentiality constraints, simulation results cannot be shared. Alternatively, a representative version will be provided via EDA Playground
+  6) The testbench is executed using Synopsys VCS (DVE); however, due to confidentiality constraints, simulation results cannot be shared. Alternatively, a representative version will be provided via EDA Playground by using run.bash file
 
 
 ## TESTBENCH Architecture:
