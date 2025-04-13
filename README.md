@@ -25,7 +25,7 @@
 
 
 ## TESTBENCH Architecture:
-![UART](https://github.com/user-attachments/assets/b48ea6de-3e52-497e-9c62-535802b15fad)
+![UART](https://github.com/user-attachments/assets/88bf3f8d-792e-4fa9-924b-f6b7472eeb27)
 
 
 ## Simulation results:
