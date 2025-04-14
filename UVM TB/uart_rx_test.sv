@@ -15,7 +15,7 @@ function void build_phase(uvm_phase phase);
 	env = uart_rx_env::type_id::create("env", this);
 	cfg = uart_rx_config::type_id::create("cfg");
 	cfg.parity_en = 1'b1;  // Initially enabled
-	cfg.parity_type = 1'b1;    // Initially even parity
+	cfg.parity_type = 1'b0;    // Initially even parity
 	cfg.prescale = 5'b01000;
 	if (!uvm_config_db#(virtual uart_rx_intf)::get(this, "", "vif", cfg.vif))
       `uvm_fatal(get_type_name(), "Failed to get vif from config DB")
