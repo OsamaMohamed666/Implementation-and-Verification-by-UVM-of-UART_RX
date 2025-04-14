@@ -28,6 +28,11 @@
 ![UART](https://github.com/user-attachments/assets/88bf3f8d-792e-4fa9-924b-f6b7472eeb27)
 
 
+## UVM TOPOLOGY
+![image](https://github.com/user-attachments/assets/89b7d8f8-7706-43a5-8711-65758642080f)
+
+
+
 ## Simulation results:
   ##### LOG
 ![image](https://github.com/user-attachments/assets/6f0474fd-362d-49d5-be81-23cfab7727d6)
