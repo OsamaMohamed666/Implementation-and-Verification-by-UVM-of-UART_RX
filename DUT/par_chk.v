@@ -1,46 +1,48 @@
-
-module par_chk # ( parameter DATA_WIDTH = 8 )
-
-(
- input   wire                   CLK,
- input   wire                   RST,
- input   wire                   parity_type, 
- input   wire                   sampled_bit,
- input   wire                   Enable,  
- input   wire  [DATA_WIDTH-1:0] P_DATA,
- output  reg                    par_err
-);
-
-
-reg        parity ;
-
-// parity calc
-always @ (*)
-  begin
-    case(parity_type)
-    1'b0 : begin                 
-	        parity <= ^P_DATA  ;     // Even Parity
-	       end
-    1'b1 : begin
-	        parity <= ~^P_DATA ;     // Odd Parity
-	       end		
-    endcase       	 
- end 
- 
-           
-// error check
-always @ (posedge CLK or negedge RST)
- begin
-  if(!RST)
+module par_chk #(parameter DATA_WIDTH =8) (
+  
+  input               clk,
+  input               rst,
+  input               parity_type,
+  input               en,
+  input               sampled_bit,
+  input     [DATA_WIDTH-1:0]     P_DATA,
+  output reg          par_err  
+  
+  );
+  
+  wire odd_par , even_par;
+  wire [1:0] par_chk_typ;
+  
+  always@(posedge clk or negedge rst)
    begin
-    par_err <= 1'b0 ;
+    if(!rst)
+	 begin
+	  par_err<=0;
+	 end
+
+	else 
+	 begin
+	    case(par_chk_typ)
+		 2'b10 : begin
+		          if (even_par == sampled_bit)
+				    par_err<=0;
+				  else
+				    par_err<=1;
+				 end
+		 2'b11 : begin 
+		          if(odd_par == sampled_bit)
+				    par_err<=0;
+				  else
+				    par_err<=1;
+				 end
+		         
+		endcase 
    end
-  else if(Enable)
-   begin
-    par_err <= parity ^	sampled_bit ;
-   end	
- end
- 
+  end 
 
-endmodule
- 
+   
+  assign par_chk_typ = {en,parity_type};
+  assign even_par = ^P_DATA;
+  assign odd_par = ~^P_DATA;
+
+endmodule 
