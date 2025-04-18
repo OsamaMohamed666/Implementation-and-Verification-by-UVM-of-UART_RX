@@ -1,66 +1,45 @@
-module edge_bit_counter 
-(
- input   wire                  CLK,
- input   wire                  RST,
- input   wire                  Enable,
- output  reg   [3:0]           bit_count,
- output  reg   [2:0]           edge_count 
+module edge_bit_counter(
+ 
+ input              clk,
+ input              rst,
+ input              en,
+ output reg [3:0]   bit_count,
+ output reg [2:0]   edge_count
+ 
 );
 
-
-
-wire                           edge_count_done ;
-
-  
-//edge counter 
-always @ (posedge CLK or negedge RST)
- begin
-  if(!RST)
-   begin
-    edge_count <= 'b0 ;
-   end
-  else if(Enable)
-   begin
-    if (edge_count_done)
+wire         counter_max;
+ 
+always @(posedge clk or negedge rst)
+  begin
+    if(!rst)
 	 begin
-      edge_count <= 'b0 ;
+	  edge_count<=0;
+	  bit_count<=0;
+	 end
+    else if(en && !counter_max)
+	 begin
+		edge_count <= edge_count+ 4'b0001;
+	 end
+	else if(en && counter_max)
+	 begin
+	    edge_count <=0;
+	    bit_count <=  bit_count + 1;
 	 end
 	else
 	 begin
-      edge_count <= edge_count + 'b1 ;
-	 end	
-   end 
-  else
-   begin
-    edge_count <= 'b0 ;
-   end   
- end
- 
-assign edge_count_done = (edge_count == 'b111) ? 1'b1 : 1'b0 ; 
-
-
-// bit counter 
-always @ (posedge CLK or negedge RST)
- begin
-  if(!RST)
-   begin
-    bit_count <= 'b0 ;
-   end
-  else if(Enable)
-   begin
-    if (edge_count_done)
-	 begin
-      bit_count <= bit_count + 'b1 ;
+	    edge_count<=0;
+	    bit_count<=0;
 	 end
-   end 
-  else
-   begin
-    bit_count <= 'b0 ;
-   end	
- end 
+	end
+	
+	
+assign counter_max = ( edge_count == 3'b111)? 1'b1:1'b0;
 
-
-
- 
 endmodule
- 
+	
+		
+	
+   
+   
+   
