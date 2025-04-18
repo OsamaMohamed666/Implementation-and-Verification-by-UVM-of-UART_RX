@@ -1,27 +1,31 @@
-
 module stp_chk (
- input   wire                  CLK,
- input   wire                  RST,
- input   wire                  sampled_bit,
- input   wire                  Enable, 
- output  reg                   stp_err
-);
 
- 
-              
-// error check
-always @ (posedge CLK or negedge RST)
- begin
-  if(!RST)
-   begin
-    stp_err <= 'b0 ;
-   end
-  else if(Enable)
-   begin
-    stp_err <= 1'b1 ^ sampled_bit ;
-   end
- end
- 
+  input        clk,
+  input        rst,
+  input        en,
+  input        sampled_bit,
+  output  reg  stp_err
 
- 
-endmodule
+  );
+  
+  always @ (posedge clk or negedge rst)
+   begin
+     if (!rst)
+	  stp_err<=0;
+	  else 
+	   begin
+	    if(en)
+		 begin
+		  case(sampled_bit)
+		    1'b0 : begin 
+			         stp_err<=1;
+			       end
+			1'b1 : begin
+			        stp_err<=0;
+				   end
+		  endcase 
+		 end  
+	   end
+	end   
+	
+endmodule 
