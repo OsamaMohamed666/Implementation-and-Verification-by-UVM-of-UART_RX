@@ -1,103 +1,67 @@
-
 module data_sampling (
- input   wire                  CLK,
- input   wire                  RST,
- input   wire                  S_DATA,
- input   wire   [4:0]          Prescale,
- input   wire   [2:0]          edge_count,
- input   wire                  Enable, 
- output  reg                   sampled_bit
-);
+  
+  input                  clk,
+  input                  rst,
+  input                  rx_in,
+  input       [4:0]      prescale,
+  input       [2:0]      edge_cnt,
+  input                  data_samp_en,
+  output  reg            sampled_bit
 
-              
-reg  [2:0]    Samples ;
+  );
+  
+wire [3:0]	half_edge_before,half_edge,half_edge_after;
 
-wire [3:0]    half_edges ,
-              half_edges_p1 ,
-			  half_edges_n1 ;
+reg  [2:0] samples;
 
-
-assign 	half_edges =  (Prescale >> 1) - 'b1 ;
-assign 	half_edges_p1 =  half_edges + 'b1 ;
-assign 	half_edges_n1 =  half_edges - 'b1 ;
-		  			  
-
-always @ (posedge CLK or negedge RST)
+assign half_edge = (prescale >> 'b1) - 'b1;
+assign half_edge_before = half_edge - 'b1;
+assign half_edge_after = half_edge + 'b1;
+  
+  always @ (posedge clk or negedge rst)
+    begin
+	  if (!rst)
+		samples<=0;
+	  else if (data_samp_en)
+       	begin
+            if(edge_cnt == half_edge)
+				samples[1] <= rx_in;
+			else if (edge_cnt == half_edge_before)
+				samples[0] <= rx_in;
+			else if (edge_cnt == half_edge_after)
+				samples[2] <= rx_in;
+        end
+	  else
+		samples<=0;
+	end	
+	
+//lets get the dominant sample zero or one of the three samples
+always @ (posedge clk or negedge rst)
  begin
-  if(!RST)
-   begin
-    Samples <= 'b0 ;
-   end
-  else 
-   begin
-    if(Enable) 
-	 begin
-	  if(edge_count == half_edges_n1)
-       begin
-        Samples[0] <= S_DATA ;
-       end	
-      else if(edge_count == half_edges)
-       begin
-        Samples[1] <= S_DATA ;
-       end	
-      else if(edge_count == half_edges_p1)
-       begin
-        Samples[2] <= S_DATA ;
-       end
-     end
-    else
-     begin
-      Samples <= 'b0 ;
-     end 
-   end	 
- end
- 
-
-//decision 
-always @ (posedge CLK or negedge RST)
- begin
-  if(!RST)
-   begin
+  if(!rst)
     sampled_bit <= 'b0 ;
-   end
   else
    begin
-    if(Enable) 
+    if(data_samp_en) 
 	 begin
-      case (Samples)
-      3'b000 : begin
-                sampled_bit <= 1'b0 ;
-               end	
-      3'b001 : begin
-                sampled_bit <= 1'b0 ;
-               end
-      3'b010 : begin
-                sampled_bit <= 1'b0 ;
-               end	
-      3'b011 : begin
-                sampled_bit <= 1'b1 ;
-               end	
-      3'b100 : begin
-                sampled_bit <= 1'b0 ;
-               end
-      3'b101 : begin
-                sampled_bit <= 1'b1 ;
-               end	
-      3'b110 : begin
-                sampled_bit <= 1'b1 ;
-               end
-      3'b111 : begin
-                sampled_bit <= 1'b1 ;
-               end
+      case (samples)
+      3'b000 :  sampled_bit <= 1'b0 ;   	
+      3'b001 :  sampled_bit <= 1'b0 ;
+      3'b010 :  sampled_bit <= 1'b0 ;
+      3'b011 :  sampled_bit <= 1'b1 ;
+      3'b100 :  sampled_bit <= 1'b0 ;
+      3'b101 :  sampled_bit <= 1'b1 ;
+      3'b110 :  sampled_bit <= 1'b1 ;
+      3'b111 :  sampled_bit <= 1'b1 ;
       endcase
      end
     else
-     begin
-       sampled_bit <= 1'b0 ;
-     end	 
+      sampled_bit <= 1'b0 ;
    end
  end 
 
-
-endmodule
- 
+	
+	
+	
+endmodule 	
+              						  
