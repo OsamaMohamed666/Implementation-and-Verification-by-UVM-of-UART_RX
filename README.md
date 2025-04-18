@@ -1,4 +1,4 @@
-# Verification-of-UART_RX-by-UVM
+# Implementation-and-Verification-by-UVM-of-UART_RX
 ## Design specifications are supervised by Eng. Ali El-Temsah:
   1) UART RX receives a UART frame on S_DATA. 
   2) UART RX supports oversampling by 8.
